@@ -12,14 +12,14 @@ async function submitUserDetails(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:3000/submit-detail', userDetails);
+        const response = await axios.post('http://localhost:3000/sign-up', userDetails);
         document.getElementById('name-ip').value = "";
         document.getElementById('email-ip').value = "";
         document.getElementById('password-ip').value = "";
     } catch (error) {
         // Handle error response
         if (error.response && error.response.status === 409) {
-            document.getElementById('error-heading').textContent = "User Available";
+            document.getElementById('error-heading').textContent = "This Email is already in use. Try different one.";
             document.getElementById('name-ip').value = "";
             document.getElementById('email-ip').value = "";
             document.getElementById('password-ip').value = "";

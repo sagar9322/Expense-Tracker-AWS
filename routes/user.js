@@ -5,6 +5,7 @@ const userRouter = require('../controllers/userSignUp');
 
 
 
-router.post('/submit-detail', userRouter.postUserDetails);
+router.post('/sign-up', userRouter.postUserDetails);
+router.post('/log-in', userRouter.getUserDetail);
 
 module.exports = router;

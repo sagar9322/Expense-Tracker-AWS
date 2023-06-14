@@ -25,3 +25,18 @@ exports.postUserDetails = async (req, res, next) => {
     }
 
 }
+
+exports.getUserDetail = async (req, res, next) => {
+
+    const email = req.body.email;
+    const password = req.body.password;
+    const user = await userDetail.findOne({ where: { email: email } });
+
+    if (user && user.password === password) {
+        return res.status(200).json({ message: 'Login Sucsessfully' });
+    } else {
+        
+        return res.status(404).json({ message: "Email or Password doesn't match" });
+    }
+
+}
