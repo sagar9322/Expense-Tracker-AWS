@@ -15,8 +15,7 @@ async function getUserDetail(event) {
             document.getElementById('email-ip').value = "";
             document.getElementById('password-ip').value = "";
             document.getElementById('error-heading').textContent = "Login Sucsessfully";
-
-
+            document.getElementById('error-heading').style.color = "green";
         }
     } catch (error) {
         // Handle error response
@@ -24,7 +23,12 @@ async function getUserDetail(event) {
             document.getElementById('error-heading').textContent = "Email or Password doesn't match";
             document.getElementById('email-ip').value = "";
             document.getElementById('password-ip').value = "";
-        } else {
+        } else if (error.response && error.response.status === 401) {
+            document.getElementById('error-heading').textContent = "Password is incorrect";
+            document.getElementById('email-ip').value = "";
+            document.getElementById('password-ip').value = "";
+        }
+        else {
             console.log('Error:', error.message);
         }
     }

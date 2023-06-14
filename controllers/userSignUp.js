@@ -34,8 +34,9 @@ exports.getUserDetail = async (req, res, next) => {
 
     if (user && user.password === password) {
         return res.status(200).json({ message: 'Login Sucsessfully' });
-    } else {
-        
+    }else if (user && user.password !== password) {
+        return res.status(401).json({ message: "Password is incorrect" });
+    }else {
         return res.status(404).json({ message: "Email or Password doesn't match" });
     }
 

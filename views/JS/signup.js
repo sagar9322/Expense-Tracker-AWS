@@ -16,6 +16,9 @@ async function submitUserDetails(event) {
         document.getElementById('name-ip').value = "";
         document.getElementById('email-ip').value = "";
         document.getElementById('password-ip').value = "";
+        document.getElementById('error-heading').textContent = "";
+        var checkbox = document.querySelector('.checkbox');
+        checkbox.checked = false;
     } catch (error) {
         // Handle error response
         if (error.response && error.response.status === 409) {
@@ -23,6 +26,8 @@ async function submitUserDetails(event) {
             document.getElementById('name-ip').value = "";
             document.getElementById('email-ip').value = "";
             document.getElementById('password-ip').value = "";
+            var checkbox = document.querySelector('.checkbox');
+            checkbox.checked = false;
         } else {
             console.log('Error:', error.message);
         }

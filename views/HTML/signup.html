@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 </head>
 <body>
-    <form id="container" action="/" method="POST">
+    <form id="container" onsubmit="submitUserDetails(event)" method="POST">
         <div id="heading-div">Sign Up</div>
         <div class="name-div">
             <i class='fa fa-user'></i>
@@ -23,16 +24,18 @@
             <input type="password" name="password" class="input" placeholder="Password" id="password-ip" required>
         </div>
         <div id="condition-div"><input type="checkbox" class="checkbox" required>
-            <h2 id="term-condition">I read and agree to <a href="/signup.html" class="Conditions"><strong>Term and Conditions</strong></a></h2>
+            <h2 id="term-condition">I read and agree to <a href="/signup.html" class="Conditions"><strong>Term and
+                        Conditions</strong></a></h2>
         </div>
         <div id="button-div">
-            <button type="submit" class="btn"  onclick="submitUserDetails(event)">Create Account</button>
+            <button type="submit" class="btn">Create Account</button>
         </div>
         <div id="error">
             <h2 id="error-heading"></h2>
         </div>
         <div id="login-div">
-            <h2 id="term-condition">Already have an account? <a href="./login.html" class="Conditions"><strong>Sign in</strong></a></h2>
+            <h2 id="term-condition">Already have an account? <a href="./login.html" class="Conditions"><strong>Sign
+                        in</strong></a></h2>
         </div>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
