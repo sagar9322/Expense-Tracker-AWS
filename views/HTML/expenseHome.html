@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="../CSS/expenseHome.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header id="main-header">
+        <div class="heading-div">
+            <h1 id="heading">Expense Details</h1>
+        </div>
+        <div class="income-div">
+            <h2 id="income">Income: </h2>
+        </div>
+        <div class="expense">
+            <h2 id="expense">Expense:</h2>
+        </div>
+    </header>
+    <div id="list-header">
+        <div class="category">
+            <h2>Category</h2>
+        </div>
+        <div class="description">
+            <h2>Description</h2>
+        </div>
+        <div class="amount">
+            <h2>Amount</h2>
+        </div>
+    </div>
+    <main id="main-container">
+        <ul id="list-group">
+            
+        </ul>
+        <div id="expense-form-container" style="display: none;">
+            <form id="expense-form" onsubmit="submitExpense(event)">
+                <!-- Add your input fields and other form elements here -->
+                <select id="category" name="category" required>
+                    <option value="Category" selected>Category</option>
+                    <option value="food">Food</option>
+                    <option value="travel">Travel</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <!-- Add more options as needed -->
+                </select>
+                <input type="text" id="expense-name" placeholder="Expense Description" required>
+                <input type="number" id="expense-amount" placeholder="Expense Amount" required>
+                <button type="submit" id="submit-btn">Submit</button>
+            </form>
+        </div>
+        <div id="income-form-container" style="display: none;">
+            <form id="expense-form" onsubmit="submitIncome(event)">
+                <input type="number" id="income-amount" placeholder="Income Amount">
+                <button type="submit" id="submit-btn">Submit</button>
+            </form>
+        </div>
+        <div id="button-container-minus">
+            <button id="subtract-button" onclick="displayExpenseForm()">-</button>
+        </div>
+        <div id="button-container-plus">
+            <button id="add-button" onclick="displayIncomeForm()">+</button>
+        </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="../JS/expenseHome.js"></script>
+
+</body>
+
+</html>
