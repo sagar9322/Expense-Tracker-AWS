@@ -3,6 +3,7 @@ const cors = require('cors');
 const User = require('./models/userSignUp');
 const ExpenseDetail = require('./models/expense');
 const Income = require('./models/income');
+const Order = require('./models/orders');
 
 
 
@@ -22,7 +23,8 @@ User.hasMany(ExpenseDetail);
 ExpenseDetail.belongsTo(User);
 Income.belongsTo(User);
 User.hasMany(Income);
-
+User.hasMany(Order);
+Order.belongsTo(User);
 
 sequelize
   .sync()

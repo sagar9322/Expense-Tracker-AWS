@@ -15,5 +15,6 @@ router.get('/get-expense', userAuthentication.authenticate, expenseRouter.getExp
 router.post('/income',userAuthentication.authenticate, incomeRouter.postIncomeDetail);
 router.get('/get-income',userAuthentication.authenticate, incomeRouter.getIncomeDetail);
 router.delete('/delete-list/:listId',userAuthentication.authenticate, expenseRouter.deleteList);
+router.get('/buy-premium', userAuthentication.authenticate, userRouter.buyPremium);
 
 module.exports = router;

@@ -1,6 +1,7 @@
 const userDetail = require('../models/userSignUp');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const RazorPay = require('razorpay');
 
 function generateAccessToken(id){
     return jwt.sign({userId: id}, 'secretkey');
@@ -54,4 +55,29 @@ exports.getUserDetail = async (req, res, next) => {
         return res.status(404).json({ message: "Email or Password doesn't match" });
     }
 
+}
+
+exports.buyPremium = async (req, res, next) => {
+try{
+    var rzp = new RazorPay({
+        key_id: "rzp_test_HO087NQYOxof6t",  //process.env.RAZORPAY_KEY_ID, process.env.RAZORPAY_KEY_SECRET
+        key_secret: "lIYb3rjyamBm7ULEpynXC5r9"
+    })
+    const amount = 250;
+
+    rzp.orders.create({amount, currency: "INR"}, (err, order) => {
+        if(err){
+            throw new Error(JSON.stringify(err));
+        }
+        console.log(">>>>>", order);
+        req.user.createOrder({orderid: order.id, status: order.status}).then(() => {
+            return res.status(201).json({order, key_id: rzp.key_id});
+        }).catch(err => {
+            throw new Error(err);
+        })
+    })
+}catch(err){
+    console.log(err);
+    res.status(403).json({message: "something went wrong", error: err})
+}
 }

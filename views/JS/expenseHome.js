@@ -1,3 +1,5 @@
+
+
 function displayExpenseForm() {
     if (document.getElementById("expense-form-container").style.display == "block") {
         document.getElementById("expense-form-container").style.display = "none";
@@ -167,6 +169,39 @@ function getIncomeDetail() {
             document.getElementById('income').textContent = `Income: ${totalIncome}`;
         }).catch(err => console.log(err));
 
+}
+
+
+async function buyPremiumMembership(event){
+    const token = localStorage.getItem('token');
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    axios.get('http://localhost:3000/buy-premium', {headers}).then((response) => {
+        console.log(response);
+        var options = 
+        {
+            "key": response.data.key_id,
+            "order_id": response.data.order_id,
+            "handler": async (response) => {
+                await axios.post('http://localhost:3000/buy-premium', {
+                    order_id: options.order_id,
+                    payment_id: response.razorpay_payment_id,
+
+                }, {headers})
+
+                alert("You Are a Premium User Now")
+            },
+        };
+        const rzpl = new Razorpay(options);
+        rzpl.open();
+        event.preventDefault();
+
+        rzpl.on('payment failed', function(response) {
+            alert('something went wrong')
+        })
+    });
 }
 
 window.addEventListener("DOMContentLoaded", getExpenseDetails);
