@@ -17,5 +17,6 @@ router.get('/get-income',userAuthentication.authenticate, incomeRouter.getIncome
 router.delete('/delete-list/:listId',userAuthentication.authenticate, expenseRouter.deleteList);
 router.get('/buy-premium', userAuthentication.authenticate, userRouter.buyPremium);
 router.post('/update-tarnsaction-status', userAuthentication.authenticate, userRouter.updatePremium);
+router.get('/leaderboard', userRouter.getLeaderboard);
 
 module.exports = router;

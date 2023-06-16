@@ -68,8 +68,8 @@ function getExpenseDetails() {
     const token = localStorage.getItem('token');
     axios.get('http://localhost:3000/get-expense', { headers: {"Authorization": token}})
         .then(response => {
-            const expenses = response.data;
-
+            const expenses = response.data.detail;
+        
             // Get the list group element
             const listGroup = document.getElementById('list-group');
             listGroup.innerHTML = "";
@@ -130,6 +130,15 @@ function getExpenseDetails() {
                 listGroup.appendChild(listItem);
             });
             document.getElementById('expense').textContent = `Expense: ${totalExense}`;
+            if(response.data.ispremium === true){
+                document.getElementById('premium').textContent = "⭐";
+                document.getElementById('premium').style.fontSize = "30px";
+            }
+            else{
+                document.getElementById('premium').textContent = "Buy Premium";
+                document.getElementById('leaderboard').style.display = "none";
+            }
+            
         })
         .catch(error => {
             console.error('Error fetching expense data:', error);
@@ -190,7 +199,9 @@ async function buyPremiumMembership(event){
                 }, {headers})
 
                 alert("You Are a Premium User Now");
-            },
+                window.location.reload();
+                
+            }
         };
         const rzpl = new Razorpay(options);
         rzpl.open();
@@ -200,6 +211,40 @@ async function buyPremiumMembership(event){
             alert('something went wrong')
         })
     });
+}
+
+function showLeaderboard(){
+   
+    axios.get('http://localhost:3000/leaderboard').then((response)=> {
+        console.log(response.data.detail)
+        const sortedUsers = response.data.detail.sort((a, b) => b.totalexpense - a.totalexpense);
+
+    // Create a new div to contain the leaderboard
+    const listGroup = document.getElementById('list-group');
+    listGroup.innerHTML = ''; // Clear the existing list items
+    listGroup.style.alignItems = "center";
+
+    // Iterate over each user and create a list item to display their details
+    sortedUsers.forEach((user) => {
+      const listItem = document.createElement('li');
+      listItem.textContent = `${user.username} - Total Expense: ${user.totalexpense}`;
+      listItem.style.fontSize = "25px";
+      listItem.style.listStyle = "number";
+      listGroup.appendChild(listItem);
+    });
+
+    // Append the leaderboard div to the document body
+    document.getElementById('main-container').style.display = "block";
+    document.getElementById('list-header').style.display = "none";
+    document.getElementById('expense-form-container').style.display = "none";
+    document.getElementById('income-form-container').style.display = "none";
+    document.getElementById('button-container-minus').style.display = "none";
+    document.getElementById('button-container-plus').style.display = "none";
+    document.getElementById('expense-form-container').style.display = "none";
+    document.getElementById('income-form-container').style.display = "none";
+    document.getElementById('button-container-minus').style.display = "none";
+    document.getElementById('button-container-plus').style.display = "none";
+    })
 }
 
 window.addEventListener("DOMContentLoaded", getExpenseDetails);

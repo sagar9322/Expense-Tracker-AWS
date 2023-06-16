@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const RazorPay = require('razorpay');
 const Order = require('../models/orders');
+const Leaderboard = require('../models/leaderboard');
 
 function generateAccessToken(id){
     return jwt.sign({userId: id}, 'secretkey');
@@ -43,12 +44,13 @@ exports.getUserDetail = async (req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
     const user = await userDetail.findOne({ where: { email: email } });
+    console.log(user)
 
     if (user) {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            return res.status(200).json({ message: 'Login Successfully',token: generateAccessToken(user.id)});
+            return res.status(200).json({ message: 'Login Successfully', token: generateAccessToken(user.id)});
         } else {
             return res.status(401).json({ message: "Password is incorrect" });
         }
@@ -100,4 +102,11 @@ exports.updatePremium = (req, res, next) =>{
     }catch(err) {
         throw new Error(err);
     }
+}
+
+exports.getLeaderboard = (req,res,next)=> {
+    Leaderboard.findAll()
+    .then(details => {
+        res.status(200).json({detail: details});
+    }).catch(err=> console.log(err));
 }

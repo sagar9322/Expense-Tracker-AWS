@@ -20,15 +20,21 @@
         <div class="expense">
             <h2 id="expense">Expense:</h2>
         </div>
+        <div id="log-out">
+            <a href="./login.html" id="log-o">Log Out</a>
+        </div>
+        <div id="leaderboard">
+            <button id="leader-btn"><h6 id="leader-heading" onclick="showLeaderboard()">Leaderboard</h6>
+            </button>
+        </div>
         <div id="account-detail">
-            <button id="account-btn" onclick="buyPremiumMembership(event)"><h6>Buy Premium</h6>
-                <!-- <div class="dash">-</div>
-                <div class="dash">-</div>
-                <div class="dash">-</div> -->
+            <button id="account-btn" onclick="buyPremiumMembership(event)"><h6 id="premium"></h6>
             </button>
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         </div>
     </header>
+    
+    <div id="main-div">
     <div id="list-header">
         <div class="category">
             <h2>Category</h2>
@@ -73,6 +79,8 @@
             <button id="add-button" onclick="displayIncomeForm()">+</button>
         </div>
     </main>
+</div>
+<div class="leader-div"></div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="../JS/expenseHome.js"></script>
 
