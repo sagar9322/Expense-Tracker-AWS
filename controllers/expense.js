@@ -1,22 +1,22 @@
 const ExpenseDetail = require('../models/expense');
-// const Leaderboard = require('../models/leaderboard');
+const Leaderboard = require('../models/leaderboard');
 
 
-exports.postExpenseDetail =  (req, res, next) => {
+exports.postExpenseDetail = async (req, res, next) => {
     const category = req.body.category;
     const description = req.body.description;
     const amount = req.body.amount;
-    // const user = await Leaderboard.findByPk(req.user.id);
+    const user = await Leaderboard.findByPk(req.user.id);
     
-    // if(!user){
-    //   await Leaderboard.create({
-    //     username: req.user.name,
-    //     totalexpense: amount
-    //   })
-    // }else{
-    //   const expense = user.totalexpense;
-    //   user.update({totalexpense: Number(amount)+Number(expense)});
-    // }
+    if(!user){
+      await Leaderboard.create({
+        username: req.user.name,
+        totalexpense: amount
+      })
+    }else{
+      const expense = user.totalexpense;
+      user.update({totalexpense: Number(amount)+Number(expense)});
+    }
 
     
 

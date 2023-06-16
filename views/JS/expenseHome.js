@@ -216,8 +216,8 @@ async function buyPremiumMembership(event){
 function showLeaderboard(){
    
     axios.get('http://localhost:3000/leaderboard').then((response)=> {
-        console.log(response.data)
-        const sortedUsers = response.data.sort((a, b) => b.totalexpense - a.totalexpense);
+        console.log(response.data.detail)
+        const sortedUsers = response.data.detail.sort((a, b) => b.totalexpense - a.totalexpense);
 
     // Create a new div to contain the leaderboard
     const listGroup = document.getElementById('list-group');
@@ -227,7 +227,7 @@ function showLeaderboard(){
     // Iterate over each user and create a list item to display their details
     sortedUsers.forEach((user) => {
       const listItem = document.createElement('li');
-      listItem.textContent = `${user.name} - Total Expense: ${user.total_cost}`;
+      listItem.textContent = `${user.username} - Total Expense: ${user.totalexpense}`;
       listItem.style.fontSize = "25px";
       listItem.style.listStyle = "number";
       listGroup.appendChild(listItem);
