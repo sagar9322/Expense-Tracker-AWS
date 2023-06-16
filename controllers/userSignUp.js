@@ -2,6 +2,7 @@ const userDetail = require('../models/userSignUp');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const RazorPay = require('razorpay');
+const Order = require('../models/orders');
 
 function generateAccessToken(id){
     return jwt.sign({userId: id}, 'secretkey');
@@ -69,7 +70,7 @@ try{
         if(err){
             throw new Error(JSON.stringify(err));
         }
-        console.log(">>>>>", order);
+        
         req.user.createOrder({orderid: order.id, status: order.status}).then(() => {
             return res.status(201).json({order, key_id: rzp.key_id});
         }).catch(err => {
@@ -80,4 +81,23 @@ try{
     console.log(err);
     res.status(403).json({message: "something went wrong", error: err})
 }
+}
+
+exports.updatePremium = (req, res, next) =>{
+    try{
+        const {payment_id, order_id} = req.body;
+        Order.findOne({where: {orderid: order_id}}).then(order => {
+            order.update({paymentid: payment_id, status: "SUCCESSFUL"}).then(() => {
+                req.user.update({ ispremiumuser: true}).then(() => {
+                    return res.status(202).json({success: true, message: "Transaction Successful"});
+                }).catch((err) => {
+                    throw new Error(err);
+                })
+            }).catch(err => {
+                throw new Error(err);
+            })
+        })
+    }catch(err) {
+        throw new Error(err);
+    }
 }

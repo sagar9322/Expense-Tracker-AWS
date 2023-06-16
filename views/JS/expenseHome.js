@@ -179,19 +179,17 @@ async function buyPremiumMembership(event){
         'Content-Type': 'application/json'
     };
     axios.get('http://localhost:3000/buy-premium', {headers}).then((response) => {
-        console.log(response);
         var options = 
         {
             "key": response.data.key_id,
-            "order_id": response.data.order_id,
+            "order_id": response.data.order.id,
             "handler": async (response) => {
-                await axios.post('http://localhost:3000/buy-premium', {
+                await axios.post('http://localhost:3000/update-tarnsaction-status', {
                     order_id: options.order_id,
-                    payment_id: response.razorpay_payment_id,
-
+                    payment_id: response.razorpay_payment_id
                 }, {headers})
 
-                alert("You Are a Premium User Now")
+                alert("You Are a Premium User Now");
             },
         };
         const rzpl = new Razorpay(options);
