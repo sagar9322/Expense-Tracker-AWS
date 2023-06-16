@@ -3,7 +3,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const RazorPay = require('razorpay');
 const Order = require('../models/orders');
-const Leaderboard = require('../models/leaderboard');
+const sequelize = require('../util/database');
+const ExpenseDetail = require('../models/expense');
+// const Leaderboard = require('../models/leaderboard');
 
 function generateAccessToken(id){
     return jwt.sign({userId: id}, 'secretkey');
@@ -104,9 +106,26 @@ exports.updatePremium = (req, res, next) =>{
     }
 }
 
-exports.getLeaderboard = (req,res,next)=> {
-    Leaderboard.findAll()
-    .then(details => {
-        res.status(200).json({detail: details});
-    }).catch(err=> console.log(err));
+exports.getLeaderboard = async (req,res,next)=> {
+    // Leaderboard.findAll()
+    // .then(details => {
+    //     res.status(200).json({detail: details});
+    // }).catch(err=> console.log(err));
+
+    try{
+        const leaderBoard = await userDetail.findAll({
+            attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'total_cost']],
+            include: [
+                {
+                model: ExpenseDetail,
+                attributes: []
+                }
+            ],
+            group: ['user.id'],
+            order: [['total_cost', 'DESC']]
+        })
+        res.status(200).json(leaderBoard);
+    }catch(err){
+        console.log(err);
+    }
 }
