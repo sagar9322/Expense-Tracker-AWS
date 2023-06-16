@@ -27,7 +27,12 @@ function submitExpense(event) {
         description: description,
         amount: amount
     }
-    axios.post('http://localhost:3000/expense', expenseDetails).then(() => {
+    const token = localStorage.getItem("token");
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    axios.post('http://localhost:3000/expense', expenseDetails, {headers}).then(() => {
         getExpenseDetails(event);
         getIncomeDetail(event);
         document.getElementById('category').value = "";
@@ -44,17 +49,22 @@ function submitIncome(event) {
     const incomeDetail = {
         income: income
     }
-    axios.post('http://localhost:3000/income', incomeDetail).then(() => {
+    const token = localStorage.getItem("token");
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    axios.post('http://localhost:3000/income', incomeDetail, {headers}).then(() => {
         document.getElementById('income-amount').value = "";
         document.getElementById("income-form-container").style.display = "none";
-        getIncomeDetail(event);
+        getIncomeDetail();
     })
 }
 
 
-function getExpenseDetails(event) {
-    event.preventDefault();
-    axios.get('http://localhost:3000/get-expense')
+function getExpenseDetails() {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:3000/get-expense', { headers: {"Authorization": token}})
         .then(response => {
             const expenses = response.data;
 
@@ -65,6 +75,7 @@ function getExpenseDetails(event) {
             let totalExense = 0;
             // Iterate over the expenses and create list items
             expenses.forEach(expense => {
+                const listId = expense.id;
                 // Create list item
                 const listItem = document.createElement('li');
                 listItem.className = 'list-item';
@@ -99,9 +110,15 @@ function getExpenseDetails(event) {
                 deleteButton.textContent = 'X';
 
                 // Add click event listener to delete button
-                deleteButton.addEventListener('click', () => {
-                    // Code to delete the expense from the database and remove the list item
-                });
+                function deleteEvent(listId) {
+                    deleteButton.onclick = (event) => {
+                        event.preventDefault();
+                        deleteFromServer(listId);
+
+                    };
+                }
+
+                deleteEvent(listId);
 
                 // Append expense details container and delete button to list item
                 listItem.appendChild(expenseDetails);
@@ -117,14 +134,25 @@ function getExpenseDetails(event) {
         });
 }
 
-function postIncome() {
-
+function deleteFromServer(listId) {
+    const token = localStorage.getItem("token");
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    axios.delete(`http://localhost:3000/delete-list/${listId}`, {headers})
+        .then(() => {
+            getExpenseDetails();
+        })
 }
 
-function getIncomeDetail(event) {
-    event.preventDefault();
-
-    axios.get('http://localhost:3000/get-income')
+function getIncomeDetail() {
+    const token = localStorage.getItem("token");
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    axios.get('http://localhost:3000/get-income', {headers})
         .then(response => {
             const incomeDetail = response.data;
             let totalIncome = 0;
@@ -133,11 +161,10 @@ function getIncomeDetail(event) {
 
                 totalIncome += Number(detail.income);
             });
-            
+
 
 
             document.getElementById('income').textContent = `Income: ${totalIncome}`;
-            console.log(income[0].income);
         }).catch(err => console.log(err));
 
 }

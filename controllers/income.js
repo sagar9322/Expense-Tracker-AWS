@@ -5,7 +5,8 @@ exports.postIncomeDetail = (req, res, next) => {
     const income = req.body.income;
 
     incomeDetail.create({
-        income: income
+        income: income,
+        userId: req.user.id
     })
     .then(result => {
         res.status(200).json({message: "submited"});
@@ -16,7 +17,7 @@ exports.postIncomeDetail = (req, res, next) => {
 }
 
 exports.getIncomeDetail = (req, res, next) => {
-    incomeDetail.findAll()
+    incomeDetail.findAll({where: {userId: req.user.id}})
   .then(details => {
     res.setHeader('Content-Type', 'text/html');
     res.send(JSON.stringify(details)); 

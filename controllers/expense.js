@@ -1,4 +1,4 @@
-const expenseDetail = require('../models/expense');
+const ExpenseDetail = require('../models/expense');
 
 
 exports.postExpenseDetail = (req, res, next) => {
@@ -6,10 +6,11 @@ exports.postExpenseDetail = (req, res, next) => {
     const description = req.body.description;
     const amount = req.body.amount;
 
-    expenseDetail.create({
+    ExpenseDetail.create({
         category: category,
         description: description,
-        amount: amount
+        amount: amount,
+        userId: req.user.id
     })
     .then(result => {
         res.status(200).json({message: "submited"});
@@ -20,7 +21,7 @@ exports.postExpenseDetail = (req, res, next) => {
 }
 
 exports.getExpenseDetail = (req, res, next) => {
-    expenseDetail.findAll()
+    ExpenseDetail.findAll({where: {userId: req.user.id}})
   .then(details => {
     res.setHeader('Content-Type', 'text/html');
     res.send(JSON.stringify(details)); 
@@ -28,4 +29,20 @@ exports.getExpenseDetail = (req, res, next) => {
   .catch(err => {
     console.log(err);
   });
+}
+
+exports.deleteList = (req, res, next)=> {
+  ExpenseDetail.findOne({
+    where: {
+      id: req.params.listId,
+      UserId: req.user.id
+    }
+  })
+  .then(listItem => {
+    return listItem.destroy();
+  }).then(()=>{
+    res.status(200).json({message: "done"});
+  }).catch(err => {
+    console.log(err);
+  })
 }

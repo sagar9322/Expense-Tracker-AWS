@@ -1,5 +1,10 @@
 const userDetail = require('../models/userSignUp');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+function generateAccessToken(id){
+    return jwt.sign({userId: id}, 'secretkey');
+}
 
 
 exports.postUserDetails = async (req, res, next) => {
@@ -15,12 +20,12 @@ exports.postUserDetails = async (req, res, next) => {
         try {
             const saltRounds = 10;
             const hashedPassword = await bcrypt.hash(password, saltRounds);
-            await userDetail.create({
+            const user = await userDetail.create({
                 name: name,
                 email: email,
                 password: hashedPassword
             });
-            res.status(200).json({ message: "submited" });
+            res.status(200).json({ message: "submited"});
         }
 
         catch (err) {
@@ -41,7 +46,7 @@ exports.getUserDetail = async (req, res, next) => {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            return res.status(200).json({ message: 'Login Successfully' });
+            return res.status(200).json({ message: 'Login Successfully',token: generateAccessToken(user.id)});
         } else {
             return res.status(401).json({ message: "Password is incorrect" });
         }

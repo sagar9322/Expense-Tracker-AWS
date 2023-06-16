@@ -10,7 +10,11 @@ async function getUserDetail(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:3000/log-in', userDetails);
+        const response = await axios.post('http://localhost:3000/log-in', userDetails).then((response) => {
+            const token = response.data.token;
+            localStorage.setItem("token", token);
+            window.location.href = "../HTML/expenseHome.html";
+        });
         if (response.status === 200) {
             document.getElementById('email-ip').value = "";
             document.getElementById('password-ip').value = "";

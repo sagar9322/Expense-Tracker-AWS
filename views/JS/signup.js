@@ -12,7 +12,9 @@ async function submitUserDetails(event) {
     }
 
     try {
-        const response = await axios.post('http://localhost:3000/sign-up', userDetails);
+        const response = await axios.post('http://localhost:3000/sign-up', userDetails).then((response) => {
+            window.location.href = "../HTML/login.html";
+        });
         document.getElementById('name-ip').value = "";
         document.getElementById('email-ip').value = "";
         document.getElementById('password-ip').value = "";
