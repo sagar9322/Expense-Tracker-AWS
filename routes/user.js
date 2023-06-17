@@ -19,5 +19,6 @@ router.get('/buy-premium', userAuthentication.authenticate, userRouter.buyPremiu
 router.post('/update-tarnsaction-status', userAuthentication.authenticate, userRouter.updatePremium);
 router.get('/leaderboard', userRouter.getLeaderboard);
 router.post('/forgot-password', userRouter.getPassword);
-router.get('/password/:uuId', userRouter.setPassword)
+router.get('/password/:uuId', userRouter.setPassword);
+router.post('/reset-password', userRouter.updatePassword);
 module.exports = router;

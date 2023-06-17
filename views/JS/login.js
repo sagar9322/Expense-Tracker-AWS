@@ -52,7 +52,29 @@ async function forgotForm(event){
    document.getElementById('term-condition').style = "block";
    document.getElementById('term-condition').style.color = "green";
 
-   await axios.post('http://localhost:3000/forgot-password', detail);
+   const response = await axios.post('http://localhost:3000/forgot-password', detail);
+  
+
+   if(response.status === 200){
+    window.location.href = "./forgotPasswordForm.html";
+    document.getElementById('email-ip').value = "sagar";
+   }
    document.getElementById("email-ip").value = "";
-   console.log(email)
+}
+
+
+async function resetPassword(event){
+    event.preventDefault();
+    const email = document.getElementById('email-ip').value;
+    const password = document.getElementById('password-ip').value;
+    const confirmPassword = document.getElementById('confirm_password-ip').value;
+
+    if(password === confirmPassword){
+      const response = await axios.post('http://localhost:3000/reset-password', {email: email, password: password});
+
+      if(response.status === 200){
+        window.location.href = "./login.html";
+      }
+    }
+
 }

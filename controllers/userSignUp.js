@@ -175,16 +175,32 @@ exports.setPassword = async (req, res, next)=> {
     const request = await ForgotPasswordRequest.findOne({ where: { id: uuId } });
 
     if(request){
-        request.update({isactive: false})
-        const filePath = 'C:/Users/asd/Desktop/Repository/Expense-Tracker-AWS-2/views/HTML/login.html';
-        fs.readFile(filePath, 'utf8', (err, data) => {
-            if (err) {
-              console.error(err);
-              res.status(500).send('Internal Server Error');
-              return;
-            }
-        
-            res.send(data);
-          });
+      res.status(200).json({message: "founded"});
     }
+    else{
+        res.status(404).json({message: "somthing went wrong"});
+    }
+}
+
+exports.updatePassword = async (req, res, next) => {
+    const updatePassword = req.body.password;
+    const email = req.body.email;
+    try{
+        const user = await userDetail.findOne({ where: { email: email } });
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(updatePassword, saltRounds);
+    
+        await user.update({password: hashedPassword});
+    
+        const request = await ForgotPasswordRequest.findOne({where: {uid: user.id}});
+    
+        await request.update({isactive: false});
+    
+        res.status(200).json({message: "password changed"});
+    }catch(err){
+        console.log(err);
+    }
+    
+    
 }
