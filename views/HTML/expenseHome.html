@@ -23,6 +23,9 @@
         <div id="log-out">
             <a href="./login.html" id="log-o">Log Out</a>
         </div>
+        <div id="download-div">
+            <button id="download-button" onclick="">Download</button>
+        </div>
         <div id="leaderboard">
             <button id="leader-btn"><h6 id="leader-heading" onclick="showLeaderboard()">Leaderboard</h6>
             </button>
@@ -35,7 +38,7 @@
     </header>
     
     <div id="main-div">
-    <div id="list-header">
+    <div id="list-header" style="display: none;">
         <div class="category">
             <h2>Category</h2>
         </div>
@@ -44,6 +47,18 @@
         </div>
         <div class="amount">
             <h2>Amount</h2>
+        </div>
+    </div>
+        <div id="month-header">
+            <div class="category">
+                <a class="month-link"><h2>Daily</h2></a>
+            </div>
+            <div class="description">
+                <a class="month-link"><h2>Monthly</h2></a>
+            </div>
+            <div class="amount">
+                <a class="month-link"><h2>Yearly</h2></a>
+            </div>
         </div>
     </div>
     <main id="main-container">
@@ -72,6 +87,7 @@
                 <button type="submit" id="submit-btn">Submit</button>
             </form>
         </div>
+        
         <div id="button-container-minus">
             <button id="subtract-button" onclick="displayExpenseForm()">-</button>
         </div>

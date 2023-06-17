@@ -56,6 +56,16 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
 }
 
+#month-header {
+    display: flex;
+    height: 50px;
+    justify-content: space-between;
+    align-items: center;
+    background-image: linear-gradient(112.5deg, #fa6d82 0%, rgb(250, 109, 130) 3%, rgb(219, 107, 130) 3%, rgb(219, 107, 130) 34%, rgb(187, 104, 131) 34%, rgb(187, 104, 131) 46%, rgb(156, 102, 131) 46%, rgb(156, 102, 131) 51%, rgb(124, 99, 132) 51%, rgb(124, 99, 132) 52%, rgb(93, 97, 132) 52%, rgb(93, 97, 132) 76%, rgb(61, 94, 133) 76%, rgb(61, 94, 133) 84%, rgb(30, 92, 133) 84%, rgb(30, 92, 133) 100%), linear-gradient(157.5deg, rgb(250, 109, 130) 0%, rgb(250, 109, 130) 3%, rgb(219, 107, 130) 3%, rgb(219, 107, 130) 34%, rgb(187, 104, 131) 34%, rgb(187, 104, 131) 46%, rgb(156, 102, 131) 46%, rgb(156, 102, 131) 51%, rgb(124, 99, 132) 51%, rgb(124, 99, 132) 52%, rgb(93, 97, 132) 52%, rgb(93, 97, 132) 76%, rgb(61, 94, 133) 76%, rgb(61, 94, 133) 84%, rgb(30, 92, 133) 84%, rgb(30, 92, 133) 100%), linear-gradient(45deg, rgb(250, 109, 130) 0%, rgb(250, 109, 130) 3%, rgb(219, 107, 130) 3%, rgb(219, 107, 130) 34%, rgb(187, 104, 131) 34%, rgb(187, 104, 131) 46%, rgb(156, 102, 131) 46%, rgb(156, 102, 131) 51%, rgb(124, 99, 132) 51%, rgb(124, 99, 132) 52%, rgb(93, 97, 132) 52%, rgb(93, 97, 132) 76%, rgb(61, 94, 133) 76%, rgb(61, 94, 133) 84%, rgb(30, 92, 133) 84%, rgb(30, 92, 133) 100%), linear-gradient(90deg, rgb(71, 69, 135), rgb(241, 26, 171));
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+}
+
 /* Set equal width for the list header divs */
 .category,
 .description,
@@ -64,6 +74,18 @@ body {
     flex-basis: 33.33%;
     align-items: center;
     justify-content: center;
+    border: 1px solid gray;
+    height: 100%;
+}
+
+.category:hover,
+.description:hover,
+.amount:hover {
+    color: black;
+}
+
+.month-link {
+    cursor: pointer;
 }
 
 h2 {
@@ -146,19 +168,21 @@ h2 {
     padding: 10px;
     position: fixed;
 }
-#account-detail{
-        display: flex;
-        bottom: 0;
-        right: 0;
-        align-self: flex-end;
-        
+
+#account-detail {
+    display: flex;
+    bottom: 0;
+    right: 0;
+    align-self: flex-end;
+
 }
-h6{
+
+h6 {
     font-size: 10px;
     color: rgb(58, 204, 204);
 }
 
-#account-btn{
+#account-btn {
     display: flex;
     width: 50px;
     height: 50px;
@@ -177,22 +201,24 @@ h6{
     transition: background-color 0.3s ease;
 }
 
-#leaderboard{
+#leaderboard {
     position: absolute;
     top: 185px;
     right: 80px;
     align-self: flex-end;
     height: 30px;
 }
-#leader-btn{
+
+#leader-btn {
     height: 40px;
     width: 100px;
     border-radius: 10px;
     background-color: rgb(65, 127, 177);
 }
-#leader-heading{
+
+#leader-heading {
     font-size: 12px;
-    color: whitesmoke;
+    color: black;
 }
 
 #add-button {
@@ -301,12 +327,27 @@ select {
     height: 30px;
 }
 
-#log-out{
+#log-out {
     position: absolute;
     right: 20px;
     top: 10px;
 }
-#log-o{
+
+#log-o {
     color: #fff;
     text-decoration: none;
+}
+
+#download-div{
+    position: absolute;
+    top: 185px;
+    right: 190px;
+    align-self: flex-end;
+    height: 30px;
+}
+#download-button {
+    height: 40px;
+    width: 100px;
+    border-radius: 10px;
+    background-color: rgb(65, 127, 177);
 }
