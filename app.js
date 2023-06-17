@@ -5,6 +5,7 @@ const ExpenseDetail = require('./models/expense');
 const Income = require('./models/income');
 const Order = require('./models/orders');
 const Leaderboard = require('./models/leaderboard');
+const ForgotPasswordRequest = require('./models/forgotPassword');
 
 
 
@@ -26,8 +27,9 @@ Income.belongsTo(User);
 User.hasMany(Income);
 User.hasMany(Order);
 Order.belongsTo(User);
-User.belongsTo(Leaderboard);
-Leaderboard.hasMany(User);
+Leaderboard.belongsTo(User);
+User.hasMany(ForgotPasswordRequest);
+
 
 
 sequelize

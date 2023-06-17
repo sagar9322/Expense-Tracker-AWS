@@ -6,7 +6,10 @@ const Order = require('../models/orders');
 const sequelize = require('../util/database');
 const ExpenseDetail = require('../models/expense');
 const Leaderboard = require('../models/leaderboard');
+const ForgotPasswordRequest = require('../models/forgotPassword');
 const Sib = require('sib-api-v3-sdk');
+const path = require('path');
+const fs = require('fs');
 const client = Sib.ApiClient.instance;
 require('dotenv').config();
 
@@ -121,28 +124,67 @@ exports.getLeaderboard = async (req, res, next) => {
 }
 
 
-exports.getPassword = (req, res, next)=> {
+exports.getPassword = async (req, res, next)=> {
+    const email = req.body.email;
 
-    const apiKey = client.authentications['api-key'];
+  try {
+    const user = await userDetail.findOne({ where: { email: email } });
+    if (!user) {
+      return res.status(404).json({ message: "Email not available" });
+    }
+console.log(user);
+    const request = await ForgotPasswordRequest.create({
+      uid: user.id,
+      isactive: true
+    });
+    console.log(request);
+    const link = `http://localhost:3000/password/${request.id}`;
+
+    const apiKey = client.authentications["api-key"];
     apiKey.apiKey = process.env.SIB_KEY;
-    
+
     const tranEmailApi = new Sib.TransactionalEmailsApi();
 
     const sender = {
-        email: 'sagarcorporateacc@gmail.com'
-    }
+      email: "sagarcorporateacc@gmail.com",
+    };
     const receivers = [
-        {
-            email: `${req.body.email}`
-        }
-    ]
+      {
+        email: `${req.body.email}`,
+      },
+    ];
 
-    tranEmailApi.sendTransacEmail({
-        sender,
-        to: receivers,
-        subject: "Forgot Email Recovery",
-        textContent: 'Your Password is ****'
-    }).then((dtl)=> {
-        console.log(dtl)
-    }).catch(err => console.log(err));
+    await tranEmailApi.sendTransacEmail({
+      sender,
+      to: receivers,
+      subject: "Forgot Email Recovery",
+      textContent: `Reset Your Password by Clicking Below Link: ${link}`,
+    });
+
+    console.log("Email sent successfully");
+    res.status(200).json({ message: "Sending done" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+exports.setPassword = async (req, res, next)=> {
+    const uuId = req.params.uuId;
+
+    const request = await ForgotPasswordRequest.findOne({ where: { id: uuId } });
+
+    if(request){
+        request.update({isactive: false})
+        const filePath = 'C:/Users/asd/Desktop/Repository/Expense-Tracker-AWS-2/views/HTML/login.html';
+        fs.readFile(filePath, 'utf8', (err, data) => {
+            if (err) {
+              console.error(err);
+              res.status(500).send('Internal Server Error');
+              return;
+            }
+        
+            res.send(data);
+          });
+    }
 }
