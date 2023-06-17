@@ -7,125 +7,112 @@ const sequelize = require('../util/database');
 const ExpenseDetail = require('../models/expense');
 const Leaderboard = require('../models/leaderboard');
 
-function generateAccessToken(id){
-    return jwt.sign({userId: id}, 'secretkey');
+function generateAccessToken(id) {
+    return jwt.sign({ userId: id }, 'secretkey');
 }
 
-
 exports.postUserDetails = async (req, res, next) => {
-
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    const availableUser = await userDetail.findAll({ where: { email: email } });
 
-    if (availableUser.length !== 0) {
-        return res.status(409).json({ message: 'User is already available' });
-    } else {
-        try {
-            const saltRounds = 10;
-            const hashedPassword = await bcrypt.hash(password, saltRounds);
-            const user = await userDetail.create({
-                name: name,
-                email: email,
-                password: hashedPassword
-            });
-            res.status(200).json({ message: "submited"});
+    try {
+        const availableUser = await userDetail.findAll({ where: { email: email } });
+
+        if (availableUser.length !== 0) {
+            return res.status(409).json({ message: 'User is already available' });
         }
 
-        catch (err) {
-            console.log(err);
-            res.status(500).json({ message: "Error occurred while saving user details" });
-        }
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        await userDetail.create({
+            name: name,
+            email: email,
+            password: hashedPassword
+        });
+
+        res.status(200).json({ message: "submitted" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "Error occurred while saving user details" });
     }
-
-}
+};
 
 exports.getUserDetail = async (req, res, next) => {
-
     const email = req.body.email;
     const password = req.body.password;
-    const user = await userDetail.findOne({ where: { email: email } });
-    console.log(user)
 
-    if (user) {
+    try {
+        const user = await userDetail.findOne({ where: { email: email } });
+
+        if (!user) {
+            return res.status(404).json({ message: "Email or Password doesn't match" });
+        }
+
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (passwordMatch) {
-            return res.status(200).json({ message: 'Login Successfully', token: generateAccessToken(user.id)});
+            return res.status(200).json({ message: 'Login Successfully', token: generateAccessToken(user.id) });
         } else {
             return res.status(401).json({ message: "Password is incorrect" });
         }
-    } else {
-        return res.status(404).json({ message: "Email or Password doesn't match" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "An error occurred" });
     }
-
-}
+};
 
 exports.buyPremium = async (req, res, next) => {
-try{
-    var rzp = new RazorPay({
-        key_id: "rzp_test_HO087NQYOxof6t",  //process.env.RAZORPAY_KEY_ID, process.env.RAZORPAY_KEY_SECRET
-        key_secret: "lIYb3rjyamBm7ULEpynXC5r9"
-    })
-    const amount = 250;
+    try {
+        const rzp = new RazorPay({
+            key_id: "rzp_test_HO087NQYOxof6t",
+            key_secret: "lIYb3rjyamBm7ULEpynXC5r9"
+        });
+        const amount = 250;
 
-    rzp.orders.create({amount, currency: "INR"}, (err, order) => {
-        if(err){
-            throw new Error(JSON.stringify(err));
-        }
-        
-        req.user.createOrder({orderid: order.id, status: order.status}).then(() => {
-            return res.status(201).json({order, key_id: rzp.key_id});
-        }).catch(err => {
-            throw new Error(err);
-        })
-    })
-}catch(err){
-    console.log(err);
-    res.status(403).json({message: "something went wrong", error: err})
-}
-}
+        rzp.orders.create({ amount, currency: "INR" }, async (err, order) => {
+            if (err) {
+                throw new Error(JSON.stringify(err));
+            }
 
-exports.updatePremium = (req, res, next) =>{
-    try{
-        const {payment_id, order_id} = req.body;
-        Order.findOne({where: {orderid: order_id}}).then(order => {
-            order.update({paymentid: payment_id, status: "SUCCESSFUL"}).then(() => {
-                req.user.update({ ispremiumuser: true}).then(() => {
-                    return res.status(202).json({success: true, message: "Transaction Successful"});
-                }).catch((err) => {
-                    throw new Error(err);
-                })
-            }).catch(err => {
+            try {
+                await req.user.createOrder({ orderid: order.id, status: order.status });
+                res.status(201).json({ order, key_id: rzp.key_id });
+            } catch (err) {
                 throw new Error(err);
-            })
-        })
-    }catch(err) {
-        throw new Error(err);
+            }
+        });
+    } catch (err) {
+        console.log(err);
+        res.status(403).json({ message: "Something went wrong", error: err });
     }
-}
+};
 
-exports.getLeaderboard = async (req,res,next)=> {
-    Leaderboard.findAll()
-    .then(details => {
-        res.status(200).json({detail: details});
-    }).catch(err=> console.log(err));
+exports.updatePremium = async (req, res, next) => {
+    try {
+        const { payment_id, order_id } = req.body;
+        const order = await Order.findOne({ where: { orderid: order_id } });
 
-    // try{
-    //     const leaderBoard = await userDetail.findAll({
-    //         attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenses.amount')), 'total_cost']],
-    //         include: [
-    //             {
-    //             model: ExpenseDetail,
-    //             attributes: []
-    //             }
-    //         ],
-    //         group: ['user.id'],
-    //         order: [['total_cost', 'DESC']]
-    //     })
-    //     res.status(200).json(leaderBoard);
-    // }catch(err){
-    //     console.log(err);
-    // }
+        if (!order) {
+            return res.status(404).json({ message: "Order not found" });
+        }
+
+        await order.update({ paymentid: payment_id, status: "SUCCESSFUL" });
+        await req.user.update({ ispremiumuser: true });
+
+        res.status(202).json({ success: true, message: "Transaction Successful" });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "An error occurred" });
+    }
+};
+
+exports.getLeaderboard = async (req, res, next) => {
+    try {
+        const details = await Leaderboard.findAll();
+        res.status(200).json({ detail: details });
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({ message: "An error occurred" });
+    }
 }

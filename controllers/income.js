@@ -1,28 +1,28 @@
 const incomeDetail = require('../models/income');
 
-
-exports.postIncomeDetail = (req, res, next) => {
+exports.postIncomeDetail = async (req, res, next) => {
+  try {
     const income = req.body.income;
 
-    incomeDetail.create({
-        income: income,
-        userId: req.user.id
-    })
-    .then(result => {
-        res.status(200).json({message: "submited"});
-      })
-      .catch(err => {
-        console.log(err);
-      });
-}
+    await incomeDetail.create({
+      income: income,
+      userId: req.user.id
+    });
 
-exports.getIncomeDetail = (req, res, next) => {
-    incomeDetail.findAll({where: {userId: req.user.id}})
-  .then(details => {
-    res.setHeader('Content-Type', 'text/html');
-    res.send(JSON.stringify(details)); 
-  })
-  .catch(err => {
+    res.status(200).json({message: "submitted"});
+  } catch (err) {
     console.log(err);
-  });
-}
+    res.status(500).json({message: "An error occurred"});
+  }
+};
+
+exports.getIncomeDetail = async (req, res, next) => {
+  try {
+    const details = await incomeDetail.findAll({where: {userId: req.user.id}});
+    res.setHeader('Content-Type', 'text/html');
+    res.send(JSON.stringify(details));
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({message: "An error occurred"});
+  }
+};

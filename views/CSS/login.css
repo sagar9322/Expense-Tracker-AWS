@@ -75,8 +75,9 @@ strong {
   margin-top: 0;
 }
 
-i {
+i,a {
   color: rgb(241, 26, 171);
+  text-decoration: none;
 }
 
 #error-heading {
