@@ -70,7 +70,7 @@ strong {
   cursor: pointer;
 }
 
-#login-div {
+.login-div {
   text-align: center;
   margin-top: 0;
 }

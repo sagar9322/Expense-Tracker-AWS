@@ -6,6 +6,9 @@ const Order = require('../models/orders');
 const sequelize = require('../util/database');
 const ExpenseDetail = require('../models/expense');
 const Leaderboard = require('../models/leaderboard');
+const Sib = require('sib-api-v3-sdk');
+const client = Sib.ApiClient.instance;
+require('dotenv').config();
 
 function generateAccessToken(id) {
     return jwt.sign({ userId: id }, 'secretkey');
@@ -65,8 +68,8 @@ exports.getUserDetail = async (req, res, next) => {
 exports.buyPremium = async (req, res, next) => {
     try {
         const rzp = new RazorPay({
-            key_id: "rzp_test_HO087NQYOxof6t",
-            key_secret: "lIYb3rjyamBm7ULEpynXC5r9"
+            key_id: process.env.RAZORPAY_KEY_ID,
+            key_secret: process.env.RAZORPAY_KEY_SECRET
         });
         const amount = 250;
 
@@ -115,4 +118,31 @@ exports.getLeaderboard = async (req, res, next) => {
         console.log(err);
         res.status(500).json({ message: "An error occurred" });
     }
+}
+
+
+exports.getPassword = (req, res, next)=> {
+
+    const apiKey = client.authentications['api-key'];
+    apiKey.apiKey = process.env.SIB_KEY;
+    
+    const tranEmailApi = new Sib.TransactionalEmailsApi();
+
+    const sender = {
+        email: 'sagarcorporateacc@gmail.com'
+    }
+    const receivers = [
+        {
+            email: `${req.body.email}`
+        }
+    ]
+
+    tranEmailApi.sendTransacEmail({
+        sender,
+        to: receivers,
+        subject: "Forgot Email Recovery",
+        textContent: 'Your Password is ****'
+    }).then((dtl)=> {
+        console.log(dtl)
+    }).catch(err => console.log(err));
 }

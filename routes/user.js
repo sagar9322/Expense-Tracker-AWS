@@ -18,5 +18,5 @@ router.delete('/delete-list/:listId',userAuthentication.authenticate, expenseRou
 router.get('/buy-premium', userAuthentication.authenticate, userRouter.buyPremium);
 router.post('/update-tarnsaction-status', userAuthentication.authenticate, userRouter.updatePremium);
 router.get('/leaderboard', userRouter.getLeaderboard);
-
+router.post('/forgot-password', userRouter.getPassword);
 module.exports = router;

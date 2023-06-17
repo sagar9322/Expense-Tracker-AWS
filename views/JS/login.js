@@ -39,3 +39,20 @@ async function getUserDetail(event) {
         }
     }
 }
+
+
+async function forgotForm(event){
+   event.preventDefault();
+   const email = document.getElementById("email-ip").value;
+
+   const detail = {
+    email: email
+   }
+   
+   document.getElementById('term-condition').style = "block";
+   document.getElementById('term-condition').style.color = "green";
+
+   await axios.post('http://localhost:3000/forgot-password', detail);
+   document.getElementById("email-ip").value = "";
+   console.log(email)
+}
