@@ -160,9 +160,18 @@ console.log(user);
       subject: "Forgot Email Recovery",
       textContent: `Reset Your Password by Clicking Below Link: ${link}`,
     });
+    const confirmation = await ForgotPasswordRequest.findOne({id: request.id})
 
-    console.log("Email sent successfully");
-    res.status(200).json({ message: "Sending done" });
+    async function waitForConfirmation() {
+        while (confirmation.isactive === false) {
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second
+        }
+        console.log("Email sent successfully");
+        res.status(200).json({ message: "Sending done" });
+      }
+      
+      waitForConfirmation();
+    
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: "Internal server error" });
@@ -175,7 +184,7 @@ exports.setPassword = async (req, res, next)=> {
     const request = await ForgotPasswordRequest.findOne({ where: { id: uuId } });
 
     if(request){
-      res.status(200).json({message: "founded"});
+      res.redirect('/forgotPasswordForm.html');
     }
     else{
         res.status(404).json({message: "somthing went wrong"});
@@ -197,7 +206,7 @@ exports.updatePassword = async (req, res, next) => {
     
         await request.update({isactive: false});
     
-        res.status(200).json({message: "password changed"});
+        res.json({message: "password changed"});
     }catch(err){
         console.log(err);
     }

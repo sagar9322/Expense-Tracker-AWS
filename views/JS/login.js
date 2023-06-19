@@ -56,25 +56,26 @@ async function forgotForm(event){
   
 
    if(response.status === 200){
-    window.location.href = "./forgotPasswordForm.html";
-    document.getElementById('email-ip').value = "sagar";
+    window.location.href = "/login.html";
    }
    document.getElementById("email-ip").value = "";
 }
 
-
-async function resetPassword(event){
+async function resetPassword(event) {
     event.preventDefault();
     const email = document.getElementById('email-ip').value;
     const password = document.getElementById('password-ip').value;
     const confirmPassword = document.getElementById('confirm_password-ip').value;
 
-    if(password === confirmPassword){
-      const response = await axios.post('http://localhost:3000/reset-password', {email: email, password: password});
-
-      if(response.status === 200){
-        window.location.href = "./login.html";
+    if (password === confirmPassword) {
+      const response = await axios.post('http://localhost:3000/reset-password', { email: email, password: password });
+      console.log(">>>>", response)
+      if (response.status === 200) {
+        window.location.href = "/";
+        console.log("done")
       }
     }
 
-}
+  }
+
+

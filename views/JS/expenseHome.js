@@ -35,7 +35,7 @@ async function submitExpense(event) {
 
     try {
         await axios.post('http://localhost:3000/expense', expenseDetails, { headers });
-        await getExpenseDetails(event);
+        await getExpenseDetails(1);
         await getIncomeDetail(event);
         document.getElementById('category').value = "";
         document.getElementById('expense-name').value = "";
@@ -69,92 +69,6 @@ async function submitIncome(event) {
     }
 }
 
-async function getExpenseDetails() {
-    const token = localStorage.getItem('token');
-    const headers = {
-        'Authorization': token,
-        'Content-Type': 'application/json'
-    };
-
-    try {
-        const response = await axios.get('http://localhost:3000/get-expense', { headers });
-        const expenses = response.data.detail;
-
-        // Get the list group element
-        const listGroup = document.getElementById('list-group');
-        listGroup.innerHTML = "";
-
-        let totalExpense = 0;
-
-        // Iterate over the expenses and create list items
-        expenses.forEach(expense => {
-            const listId = expense.id;
-
-            // Create list item
-            const listItem = document.createElement('li');
-            listItem.className = 'list-item';
-
-            // Create expense details container div
-            const expenseDetails = document.createElement('div');
-            expenseDetails.className = 'expense-details';
-
-            // Create separate divs for each expense detail
-            const categoryDiv = document.createElement('div');
-            categoryDiv.className = 'detail';
-            categoryDiv.textContent = expense.category;
-
-            const descriptionDiv = document.createElement('div');
-            descriptionDiv.className = 'detail';
-            descriptionDiv.textContent = expense.description;
-
-            const amountDiv = document.createElement('div');
-            amountDiv.className = 'detail';
-            amountDiv.textContent = expense.amount;
-
-            totalExpense += Number(expense.amount);
-
-            // Append expense details divs to the expense details container
-            expenseDetails.appendChild(categoryDiv);
-            expenseDetails.appendChild(descriptionDiv);
-            expenseDetails.appendChild(amountDiv);
-
-            // Create delete button
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-btn';
-            deleteButton.textContent = 'X';
-
-            // Add click event listener to delete button
-            function deleteEvent(listId) {
-                deleteButton.onclick = (event) => {
-                    event.preventDefault();
-                    deleteFromServer(listId);
-                };
-            }
-
-            deleteEvent(listId);
-
-            // Append expense details container and delete button to list item
-            listItem.appendChild(expenseDetails);
-            listItem.appendChild(deleteButton);
-
-            // Append list item to list group
-            listGroup.appendChild(listItem);
-        });
-
-        document.getElementById('expense').textContent = `Expense: ${totalExpense}`;
-
-        if (response.data.ispremium === true) {
-            document.getElementById('premium').textContent = "⭐";
-            document.getElementById('premium').style.fontSize = "30px";
-        } else {
-            document.getElementById('premium').textContent = "Buy Premium";
-            document.getElementById('leaderboard').style.display = "none";
-        }
-    } catch (error) {
-        console.error('Error fetching expense data:', error);
-    }
-}
-
 async function deleteFromServer(listId) {
     const token = localStorage.getItem("token");
     const headers = {
@@ -164,7 +78,7 @@ async function deleteFromServer(listId) {
 
     try {
         await axios.delete(`http://localhost:3000/delete-list/${listId}`, { headers });
-        await getExpenseDetails();
+        await getExpenseDetails(1);
     } catch (error) {
         console.error('Error deleting expense:', error);
     }
@@ -179,6 +93,7 @@ async function getIncomeDetail() {
 
     try {
         const response = await axios.get('http://localhost:3000/get-income', { headers });
+
         const incomeDetail = response.data;
         let totalIncome = 0;
 
@@ -261,11 +176,145 @@ function showLeaderboard() {
 
 async function initializeApp() {
     try {
-        await getExpenseDetails();
+        await getExpenseDetails(1,"year");
         await getIncomeDetail();
     } catch (error) {
         console.error('Error initializing app:', error);
     }
 }
+
+
+async function getExpenseDetails(number, filter) {
+    const token = localStorage.getItem('token');
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+
+    try {
+        const response = await axios.get(`http://localhost:3000/get-expense/12?page=${number}`, { headers });
+        let expenses = response.data.detail;
+
+
+        // Get the list group element
+        const listGroup = document.getElementById('list-group');
+        listGroup.innerHTML = "";
+
+        let totalExpense = 0;
+
+        // Filter expenses by month, day, or year based on the selected filter
+        let filterType = filter;
+        const currentDate = new Date();
+
+        if (filterType === 'month') {
+            const currentMonth = currentDate.getMonth();
+            expenses = expenses.filter(expense => new Date(expense.createdAt).getMonth() === currentMonth);
+        } else if (filterType === 'day') {
+            const currentDay = currentDate.getDate();
+            expenses = expenses.filter(expense => new Date(expense.createdAt).getDate() === currentDay);
+        } else if (filterType === 'year') {
+            const currentYear = currentDate.getFullYear();
+            expenses = expenses.filter(expense => new Date(expense.createdAt).getFullYear() === currentYear);
+        }
+
+        // Iterate over the expenses and create list items
+        expenses.forEach(expense => {
+            const listId = expense.id;
+
+            // Create list item
+            const listItem = document.createElement('li');
+            listItem.className = 'list-item';
+
+            // Create expense details container div
+            const expenseDetails = document.createElement('div');
+            expenseDetails.className = 'expense-details';
+
+            // Create separate divs for each expense detail
+            const categoryDiv = document.createElement('div');
+            categoryDiv.className = 'detail';
+            categoryDiv.textContent = expense.category;
+
+            const descriptionDiv = document.createElement('div');
+            descriptionDiv.className = 'detail';
+            descriptionDiv.textContent = expense.description;
+
+            const amountDiv = document.createElement('div');
+            amountDiv.className = 'detail';
+            amountDiv.textContent = expense.amount;
+
+            totalExpense += Number(expense.amount);
+
+            // Append expense details divs to the expense details container
+            expenseDetails.appendChild(categoryDiv);
+            expenseDetails.appendChild(descriptionDiv);
+            expenseDetails.appendChild(amountDiv);
+
+            // Create delete button
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'delete-btn';
+            deleteButton.textContent = 'X';
+
+            // Add click event listener to delete button
+            function deleteEvent(listId) {
+                deleteButton.onclick = (event) => {
+                    event.preventDefault();
+                    deleteFromServer(listId);
+                };
+            }
+
+            deleteEvent(listId);
+            
+
+            // Append expense details container and delete button to list item
+            listItem.appendChild(expenseDetails);
+            listItem.appendChild(deleteButton);
+
+            // Append list item to list group
+            listGroup.appendChild(listItem);
+        });
+
+        document.getElementById('expense').textContent = `Expense: ${totalExpense}`;
+
+
+        if (response.data.ispremium === true) {
+            document.getElementById('premium').textContent = "⭐";
+            document.getElementById('premium').style.fontSize = "30px";
+            document.getElementById('list-header').style.display = "none";
+        } else {
+            document.getElementById('premium').textContent = "Buy Premium";
+            document.getElementById('leaderboard').style.display = "none";
+            document.getElementById('download-button').style.display = "none";
+            document.getElementById('list-header').style.display = "flex";
+            document.getElementById('month-header').style.display = "none";
+        }
+    } catch (error) {
+        console.error('Error fetching expense data:', error);
+    }
+}
+
+
+async function downloadExpense(event) {
+    event.preventDefault();
+    const token = localStorage.getItem('token');
+    console.log(token);
+    const headers = {
+        'Authorization': token,
+        'Content-Type': 'application/json'
+    };
+    const response = await axios.get('http://localhost:3000/download', { headers });
+    if (response.status === 200) {
+        let a = document.createElement('a');
+        a.href = response.data.fileUrl;
+        a.download = "myexpense.csv";
+        a.click();
+    } else {
+        throw new Error("somthing went wrong");
+    }
+
+}
+
+
+
+
 
 window.addEventListener("DOMContentLoaded", initializeApp);

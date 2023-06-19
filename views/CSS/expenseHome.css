@@ -84,7 +84,7 @@ body {
     color: black;
 }
 
-.month-link {
+#month, #day, #year {
     cursor: pointer;
 }
 
@@ -351,3 +351,30 @@ select {
     border-radius: 10px;
     background-color: rgb(65, 127, 177);
 }
+#pagination{
+    display: flex;
+    position: fixed;
+    width: 150px;
+    transform: translate(-50%, -50%);
+    margin-top: 100px;
+    left: 50%;
+    justify-content: space-between;
+    align-items: center;
+}
+.page{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    border: 1px solid rgb(65, 127, 177);
+    color: black;
+}
+.page:hover{
+    background: rgb(65, 127, 177);
+    color: #fff;
+    width: 40px;
+    height: 60px;
+    cursor: pointer;
+}
+

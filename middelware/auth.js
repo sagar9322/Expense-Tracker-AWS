@@ -4,7 +4,13 @@ const User = require('../models/userSignUp');
 exports.authenticate = (req, res, next) => {
     try{
         const token = req.header('Authorization');
-        const user = jwt.verify(token , 'secretkey');
+        console.log(token);
+        const user = jwt.verify(token, 'secretkey', function(err, decoded) {
+            if (err) throw err;
+            console.log(decoded);
+            return decoded;
+        });
+        console.log(">>>>", user);
         
         User.findByPk(user.userId).then(user => {
             req.user = user;

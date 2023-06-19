@@ -6,7 +6,7 @@ const Income = require('./models/income');
 const Order = require('./models/orders');
 const Leaderboard = require('./models/leaderboard');
 const ForgotPasswordRequest = require('./models/forgotPassword');
-
+const path = require('path');
 
 
 const app = express();
@@ -29,6 +29,8 @@ User.hasMany(Order);
 Order.belongsTo(User);
 Leaderboard.belongsTo(User);
 User.hasMany(ForgotPasswordRequest);
+// app.use(express.static('public'));
+
 
 
 

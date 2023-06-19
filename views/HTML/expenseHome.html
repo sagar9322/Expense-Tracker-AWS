@@ -24,7 +24,7 @@
             <a href="./login.html" id="log-o">Log Out</a>
         </div>
         <div id="download-div">
-            <button id="download-button" onclick="">Download</button>
+            <button id="download-button" onclick="downloadExpense(event)">Download</button>
         </div>
         <div id="leaderboard">
             <button id="leader-btn"><h6 id="leader-heading" onclick="showLeaderboard()">Leaderboard</h6>
@@ -38,7 +38,7 @@
     </header>
     
     <div id="main-div">
-    <div id="list-header" style="display: none;">
+    <div id="list-header">
         <div class="category">
             <h2>Category</h2>
         </div>
@@ -51,13 +51,13 @@
     </div>
         <div id="month-header">
             <div class="category">
-                <a class="month-link"><h2>Daily</h2></a>
+                <a id="day" onclick="getExpenseDetails(1,'day')"><h2>Daily</h2></a>
             </div>
             <div class="description">
-                <a class="month-link"><h2>Monthly</h2></a>
+                <a id="month" onclick="getExpenseDetails(1, 'month')"><h2>Monthly</h2></a>
             </div>
             <div class="amount">
-                <a class="month-link"><h2>Yearly</h2></a>
+                <a id="year" onclick="getExpenseDetails(1, 'year')"><h2>Yearly</h2></a>
             </div>
         </div>
     </div>
@@ -65,6 +65,7 @@
         <ul id="list-group">
             
         </ul>
+        
         <div id="expense-form-container" style="display: none;">
             <form id="expense-form" onsubmit="submitExpense(event)">
                 <!-- Add your input fields and other form elements here -->
@@ -95,6 +96,11 @@
             <button id="add-button" onclick="displayIncomeForm()">+</button>
         </div>
     </main>
+    <div id="pagination">
+        <a class="page" onclick="getExpenseDetails(1)">1</a>
+        <a class="page" onclick="getExpenseDetails(2)">2</a>
+        <a class="page" onclick="getExpenseDetails(3)">3</a>
+    </div>
 </div>
 <div class="leader-div"></div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
