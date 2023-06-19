@@ -7,9 +7,11 @@ const Order = require('./models/orders');
 const Leaderboard = require('./models/leaderboard');
 const ForgotPasswordRequest = require('./models/forgotPassword');
 const path = require('path');
-const helmet = reuire('helmet');
+const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
+const fs = require('fs');
+const https = require('https');
 
 
 const app = express();
@@ -20,6 +22,8 @@ app.use(express.json());
 app.use(helmet());
 app.use(compression());
 app.use(morgan('combined', {stream: accessLogStream}));
+const privateKey = fs.readFileSync('server.key');
+const certificate = fs.readFileSync('server.cert');
 
 
 const bodyParser = require('body-parser');
@@ -46,6 +50,7 @@ User.hasMany(ForgotPasswordRequest);
 sequelize
   .sync()
   .then(result => {
+    // https.createServer({key: privateKey, cert: certificate}, app).listen(process.env.PORT ||3000);
     app.listen(3000);
   })
   .catch(err => {

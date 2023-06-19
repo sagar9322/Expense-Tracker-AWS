@@ -2,6 +2,7 @@ const ExpenseDetail = require('../models/expense');
 const Leaderboard = require('../models/leaderboard');
 const sequelize = require('../util/database');
 const AWS = require('aws-sdk');
+require('dotenv').config();
 
 exports.postExpenseDetail = async (req, res, next) => {
   const t = await sequelize.transaction();
@@ -40,7 +41,6 @@ exports.postExpenseDetail = async (req, res, next) => {
 
 exports.getExpenseDetail = async (req, res, next) => {
   const pageNumber = req.query.page;
-  console.log(">>><<<", pageNumber)
   const itemsPerPage = 2; // Number of items to display per page
 
 const offset = (pageNumber - 1) * itemsPerPage;

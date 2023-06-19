@@ -7,7 +7,6 @@ exports.authenticate = (req, res, next) => {
 
         const user = jwt.verify(token, process.env.TOKEN_SECRET_KEY , function(err, decoded) {
             if (err) throw err;
-            console.log(decoded);
             return decoded;
         });
         
