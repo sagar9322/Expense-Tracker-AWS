@@ -14,7 +14,7 @@ const client = Sib.ApiClient.instance;
 require('dotenv').config();
 
 function generateAccessToken(id) {
-    return jwt.sign({ userId: id }, 'secretkey');
+    return jwt.sign({ userId: id }, process.env.TOKEN_SECRET_KEY);
 }
 
 exports.postUserDetails = async (req, res, next) => {

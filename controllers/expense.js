@@ -89,9 +89,9 @@ exports.deleteList = async (req, res, next) => {
 };
 
 function uploadToS3(data, filename){
-  const BUCKET_NAME = "myexpense22";
-  const IAM_USER_KEY = "AKIAQMRWA6I7TJ6QMC24";
-  const IAM_USER_SECRET = "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";
+  const BUCKET_NAME = process.env.BUCKET_NAME;
+  const IAM_USER_KEY = process.env.IAM_USER_KEY;
+  const IAM_USER_SECRET = process.env.IAM_USER_SECRET;
 
   let s3bucket = new AWS.S3({
     accessKeyId: IAM_USER_KEY,
