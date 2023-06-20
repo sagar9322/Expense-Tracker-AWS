@@ -15,8 +15,8 @@ const https = require('https');
 
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'views')));
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'acess.log'), {flag: 'a'});
-
 app.use(cors());
 app.use(express.json());
 app.use(helmet());
@@ -25,13 +25,16 @@ app.use(morgan('combined', {stream: accessLogStream}));
 const privateKey = fs.readFileSync('server.key');
 const certificate = fs.readFileSync('server.cert');
 
-
 const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
+
 
 const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 app.use(userRoutes);
+app.use((req, res, next) =>{
+  res.sendFile(path.join(__dirname, `views/${req.url}`));
+})
 
 
 User.hasMany(ExpenseDetail);
@@ -42,7 +45,6 @@ User.hasMany(Order);
 Order.belongsTo(User);
 Leaderboard.belongsTo(User);
 User.hasMany(ForgotPasswordRequest);
-// app.use(express.static('public'));
 
 
 

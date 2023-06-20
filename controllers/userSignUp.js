@@ -184,7 +184,7 @@ exports.setPassword = async (req, res, next)=> {
     const request = await ForgotPasswordRequest.findOne({ where: { id: uuId } });
 
     if(request){
-      res.redirect('/forgotPasswordForm.html');
+      res.redirect('/HTML/forgotPasswordForm.html');
     }
     else{
         res.status(404).json({message: "somthing went wrong"});
@@ -206,7 +206,7 @@ exports.updatePassword = async (req, res, next) => {
     
         await request.update({isactive: false});
     
-        res.json({message: "password changed"});
+        res.status(200).json({message: "done"});
     }catch(err){
         console.log(err);
     }

@@ -8,6 +8,7 @@ async function getUserDetail(event) {
         email: email,
         password: password
     }
+    console.log("coming");
 
     try {
         const response = await axios.post('http://localhost:3000/log-in', userDetails).then((response) => {
@@ -56,7 +57,7 @@ async function forgotForm(event){
   
 
    if(response.status === 200){
-    window.location.href = "/login.html";
+    window.location.href = "/HTML/login.html";
    }
    document.getElementById("email-ip").value = "";
 }
@@ -71,7 +72,7 @@ async function resetPassword(event) {
       const response = await axios.post('http://localhost:3000/reset-password', { email: email, password: password });
       console.log(">>>>", response)
       if (response.status === 200) {
-        window.location.href = "/";
+        window.location.href = "/HTML/login.html";
         console.log("done")
       }
     }
