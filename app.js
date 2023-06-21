@@ -33,6 +33,7 @@ const sequelize = require('./util/database');
 const userRoutes = require('./routes/user');
 app.use(userRoutes);
 app.use((req, res, next) =>{
+  console.log("done");
   res.sendFile(path.join(__dirname, `views/${req.url}`));
 })
 
