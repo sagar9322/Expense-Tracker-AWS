@@ -349,7 +349,7 @@ select {
     height: 40px;
     width: 100px;
     border-radius: 10px;
-    background-color: rgb(65, 127, 177);
+    background-color: #FFE4A7;
 }
 #pagination{
     display: flex;
